@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>الفؤاد تيلكوم - جدولة تحديث الشريحة</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Orbitron:wght@400;700;900&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    :root {
+      --bg-primary:   #0a0e1a;
+      --bg-secondary: #0d1117;
+      --bg-card:      #111827;
+      --bg-card2:     #1a2235;
+      --neon-green:   #00ff88;
+      --neon-cyan:    #00d4ff;
+      --neon-red:     #e74c3c;
+      --text-primary: #e8eaf0;
+      --text-muted:   #7a8599;
+      --border:       #1e2d40;
+      --glow-green:   0 0 10px #00ff8880, 0 0 20px #00ff8840;
+      --glow-cyan:    0 0 10px #00d4ff80, 0 0 20px #00d4ff40;
+      --glow-red:     0 0 10px #e74c3c80, 0 0 20px #e74c3c40;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: 'Cairo', sans-serif;
+      min-height: 100vh;
+      direction: rtl;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        radial-gradient(circle at 20% 20%, #00ff8808 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, #00d4ff08 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 24px 16px 120px;
+    }
+
+    /* ── رأس الصفحة ── */
+    .hero {
+      text-align: center;
+      padding: 48px 16px 40px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 40px;
+    }
+
+    .hero-logo {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(14px, 3.5vw, 20px);
+      color: var(--neon-cyan);
+      letter-spacing: 3px;
+      text-shadow: var(--glow-cyan);
+      margin-bottom: 24px;
+      animation: pulseText 3s ease-in-out infinite;
+    }
+
+    @keyframes pulseText {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.7; }
+    }
+
+    .hero-title {
+      font-size: clamp(22px, 5vw, 34px);
+      font-weight: 900;
+      color: var(--neon-green);
+      text-shadow: var(--glow-green);
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(14px, 3vw, 17px);
+      color: var(--text-muted);
+      line-height: 1.9;
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    .hero-subtitle span { color: var(--neon-cyan); font-weight: 700; }
+
+    .hero-divider {
+      width: 120px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--neon-green), transparent);
+      margin: 24px auto 0;
+    }
+
+    /* ── بطاقة ── */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 28px;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--neon-cyan);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-title::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 20px;
+      background: var(--neon-cyan);
+      border-radius: 2px;
+      box-shadow: var(--glow-cyan);
+    }
+
+    /* ── حقل الإدخال ── */
+    .input-group { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    .phone-input {
+      flex: 1;
+      min-width: 200px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 18px;
+      color: var(--text-primary);
+      font-family: 'Cairo', sans-serif;
+      font-size: 16px;
+      direction: ltr;
+      text-align: right;
+      outline: none;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .phone-input::placeholder { color: var(--text-muted); direction: rtl; }
+    .phone-input:focus { border-color: var(--neon-cyan); box-shadow: var(--glow-cyan); }
+
+    /* ── أزرار ── */
+    .btn {
+      border: none;
+      border-radius: 10px;
+      padding: 14px 24px;
+      font-family: 'Cairo', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .btn-cyan {
+      background: transparent;
+      border: 1px solid var(--neon-cyan);
+      color: var(--neon-cyan);
+    }
+
+    .btn-cyan:hover { background: var(--neon-cyan); color: var(--bg-primary); box-shadow: var(--glow-cyan); }
+    .btn-cyan:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* ── رسائل الحالة ── */
+    .status-msg {
+      margin-top: 14px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .status-msg.show { display: flex; }
+
+    .status-checking { background: #0d1f2d; border: 1px solid #1e3a4a; color: var(--neon-cyan); }
+    .status-error    { background: #1f0d0d; border: 1px solid #4a1e1e; color: #ff6b6b; }
+    .status-success  { background: #0d1f15; border: 1px solid #1e4a2e; color: var(--neon-green); }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .spin { display: inline-block; animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── قسم الأيام ── */
+    .days-section { display: none; }
+    .days-section.show { display: block; animation: fadeIn 0.4s ease; }
+
+    .select-all-wrapper { display: flex; justify-content: flex-end; margin-bottom: 16px; }
+
+    .btn-select-all {
+      background: transparent;
+      border: 1px dashed var(--neon-green);
+      color: var(--neon-green);
+      border-radius: 8px;
+      padding: 8px 18px;
+      font-family: 'Cairo', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-select-all:hover { background: var(--neon-green); color: var(--bg-primary); box-shadow: var(--glow-green); }
+
+    .days-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .day-btn {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 8px;
+      color: var(--text-muted);
+      font-family: 'Cairo', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.25s ease;
+      user-select: none;
+    }
+
+    .day-btn:hover { border-color: var(--neon-cyan); color: var(--neon-cyan); }
+
+    .day-btn.active {
+      background: #0a2a1a;
+      border-color: var(--neon-green);
+      color: var(--neon-green);
+      box-shadow: var(--glow-green);
+    }
+
+    .day-time-panels { display: flex; flex-direction: column; gap: 12px; }
+
+    .time-panel {
+      background: var(--bg-card2);
+      border: 1px solid #1e3a2a;
+      border-radius: 12px;
+      padding: 16px 18px;
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .time-panel.show {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .time-panel-label { font-size: 14px; font-weight: 700; color: var(--neon-green); min-width: 70px; }
+
+    .time-select {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 12px;
+      color: var(--text-primary);
+      font-family: 'Cairo', sans-serif;
+      font-size: 15px;
+      outline: none;
+      cursor: pointer;
+      transition: border-color 0.2s;
+      direction: ltr;
+    }
+
+    .time-select:focus { border-color: var(--neon-green); }
+
+    .period-toggle { display: flex; gap: 6px; }
+
+    .period-btn {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 14px;
+      color: var(--text-muted);
+      font-family: 'Cairo', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .period-btn.active { background: #0a2a1a; border-color: var(--neon-green); color: var(--neon-green); }
+
+    /* ── زر التأكيد ── */
+    .confirm-section { display: none; margin-top: 8px; }
+    .confirm-section.show { display: block; animation: fadeIn 0.4s ease; }
+
+    .btn-confirm {
+      width: 100%;
+      padding: 18px;
+      font-size: 20px;
+      font-weight: 900;
+      border-radius: 12px;
+      border: none;
+      background: var(--neon-red);
+      color: #fff;
+      cursor: pointer;
+      font-family: 'Cairo', sans-serif;
+      box-shadow: var(--glow-red);
+      transition: all 0.4s ease;
+      letter-spacing: 2px;
+    }
+
+    .btn-confirm:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 0 20px #e74c3c, 0 0 40px #e74c3c80; }
+    .btn-confirm.success { background: var(--neon-green); color: var(--bg-primary); box-shadow: var(--glow-green); }
+    .btn-confirm:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .confirm-result {
+      margin-top: 14px;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--neon-green);
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .confirm-result.show { display: block; }
+
+    /* ── واتساب ── */
+    .whatsapp-fab {
+      position: fixed;
+      bottom: 28px;
+      left: 28px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: #25d366;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      z-index: 1000;
+      box-shadow: 0 4px 20px #25d36660;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .whatsapp-fab:hover { transform: scale(1.1); box-shadow: 0 6px 28px #25d36680; }
+
+    .whatsapp-fab::before {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      border: 2px solid #25d366;
+      animation: waPulse 2s ease-out infinite;
+    }
+
+    @keyframes waPulse {
+      0%   { transform: scale(1);   opacity: 0.8; }
+      100% { transform: scale(1.5); opacity: 0; }
+    }
+
+    .whatsapp-fab svg { width: 32px; height: 32px; fill: #fff; }
+
+    .whatsapp-fab::after {
+      content: 'تواصل مع الدعم الفني';
+      position: absolute;
+      left: 70px;
+      background: #111;
+      color: #fff;
+      font-family: 'Cairo', sans-serif;
+      font-size: 13px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+      border: 1px solid #25d366;
+    }
+
+    .whatsapp-fab:hover::after { opacity: 1; }
+
+    /* ── Responsive ── */
+    @media (max-width: 480px) {
+      .card { padding: 18px 14px; }
+      .input-group { flex-direction: column; }
+      .btn { width: 100%; }
+      .days-grid { grid-template-columns: repeat(4, 1fr); }
+      .time-panel.show { flex-direction: column; align-items: flex-start; }
+      .whatsapp-fab { bottom: 16px; left: 16px; width: 52px; height: 52px; }
+      .whatsapp-fab::after { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-logo">AL-FOUAD TELECOM ◈ الفؤاد تيلكوم</div>
+  <h1 class="hero-title">أهلاً وسهلاً بكم زبائننا الكرام</h1>
+  <p class="hero-subtitle">
+    أقوى خاصية لتحديث الأرقام الإلكترونية والبلاستيكية<br />
+    الأداة عبارة عن <span>جدولة رقمك للتحديث</span><br />
+    بمعنى: اختيار اليوم والوقت المناسب
+    <span>لتحديث الشريحة تلقائياً</span>
+  </p>
+  <div class="hero-divider"></div>
+</div>
+
+<div class="container">
+
+  <!-- فحص الرقم -->
+  <div class="card">
+    <div class="card-title">فحص الرقم</div>
+    <div class="input-group">
+      <input
+        id="phoneInput"
+        class="phone-input"
+        type="tel"
+        placeholder="أدخل رقمك هنا..."
+        maxlength="20"
+      />
+      <button class="btn btn-cyan" id="checkBtn" onclick="checkPhone()">فحص الرقم</button>
+    </div>
+    <div class="status-msg status-checking" id="msgChecking">
+      <span class="spin">⟳</span> جاري فحص الرقم...
+    </div>
+    <div class="status-msg status-error" id="msgError">
+      ❌ عذراً، رقمك غير مدرج تحت وكالة الفؤاد تيلكوم
+    </div>
+    <div class="status-msg status-success" id="msgFound">
+      ✅ تم التحقق من الرقم بنجاح! اختر أيام الجدولة أدناه.
+    </div>
+    <div class="status-msg status-error" id="msgNetError">
+      ⚠️ خطأ في الشبكة، يرجى المحاولة مرة أخرى.
+    </div>
+  </div>
+
+  <!-- أيام الجدولة -->
+  <div class="card days-section" id="daysSection">
+    <div class="card-title">اختيار أيام الجدولة</div>
+    <div class="select-all-wrapper">
+      <button class="btn-select-all" onclick="toggleAllDays()">✦ تحديد الكل</button>
+    </div>
+    <div class="days-grid" id="daysGrid">
+      <button class="day-btn" data-day="الأحد"     onclick="toggleDay(this)">الأحد</button>
+      <button class="day-btn" data-day="الاثنين"  onclick="toggleDay(this)">الاثنين</button>
+      <button class="day-btn" data-day="الثلاثاء" onclick="toggleDay(this)">الثلاثاء</button>
+      <button class="day-btn" data-day="الأربعاء" onclick="toggleDay(this)">الأربعاء</button>
+      <button class="day-btn" data-day="الخميس"   onclick="toggleDay(this)">الخميس</button>
+      <button class="day-btn" data-day="الجمعة"   onclick="toggleDay(this)">الجمعة</button>
+      <button class="day-btn" data-day="السبت"    onclick="toggleDay(this)">السبت</button>
+    </div>
+    <div class="day-time-panels" id="timePanels"></div>
+  </div>
+
+  <!-- زر التأكيد -->
+  <div class="confirm-section" id="confirmSection">
+    <button class="btn-confirm" id="confirmBtn" onclick="confirmSchedule()">تأكيد</button>
+    <div class="confirm-result" id="confirmResult">
+      ✅ تم إضافة الرقم بنجاح للاستفادة من الخدمة
+    </div>
+  </div>
+
+</div>
+
+<!-- واتساب -->
+<a
+  class="whatsapp-fab"
+  href="https://wa.me/970XXXXXXXXX"
+  target="_blank"
+  rel="noopener noreferrer"
+  aria-label="تواصل مع الدعم الفني"
+>
+  <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+    <path d="M16 0C7.163 0 0 7.163 0 16c0 2.822.738 5.469 2.027 7.77L0 32l8.47-2.004A15.94 15.94 0 0 0 16 32c8.837 0 16-7.163 16-16S24.837 0 16 0zm0 29.333a13.3 13.3 0 0 1-6.763-1.843l-.486-.288-4.997 1.182 1.26-4.857-.318-.499A13.261 13.261 0 0 1 2.667 16C2.667 8.636 8.636 2.667 16 2.667S29.333 8.636 29.333 16 23.364 29.333 16 29.333zm7.274-9.822c-.397-.199-2.353-1.16-2.718-1.293-.365-.132-.63-.199-.897.199-.265.397-1.028 1.293-1.26 1.56-.232.265-.464.298-.861.099-.397-.199-1.675-.617-3.19-1.967-1.179-1.052-1.975-2.35-2.206-2.748-.232-.397-.025-.613.174-.81.179-.178.397-.465.596-.697.199-.232.265-.397.397-.662.133-.265.066-.497-.033-.696-.099-.199-.897-2.16-1.229-2.958-.324-.776-.653-.671-.897-.683l-.763-.013c-.265 0-.696.099-1.061.497-.365.397-1.393 1.36-1.393 3.317 0 1.958 1.426 3.848 1.625 4.113.199.265 2.807 4.286 6.803 6.013.951.41 1.693.656 2.271.84.954.304 1.823.261 2.51.158.766-.114 2.353-.962 2.685-1.89.332-.927.332-1.723.232-1.89-.099-.166-.365-.265-.762-.464z"/>
+  </svg>
+</a>
+
+<script>
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  // ⚙️ عدّل هذين السطرين فقط
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  const API_TOKEN = "00506852a4758b4a0cc3d8f3050ae72421d8da1724ab8b19acb6fc911e7a12ad";
+  const API_BASE  = "curl -X POST https://go.smilesim.net/api/bot/refresh \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE" \
+  -H "Content-Type: application/json" \
+  -d '{"phone_number": "0526851882"}'
+
+
+# Response: {"success": true|false, "message": "..."}";
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  const API_TIMEOUT = 10000;
+  let verifiedPhone = "";
+  const selectedDays = new Map();
+
+  function hideAllMsgs() {
+    ['msgChecking','msgError','msgFound','msgNetError'].forEach(id => {
+      document.getElementById(id).classList.remove('show');
+    });
+  }
+
+  function showMsg(id) {
+    hideAllMsgs();
+    document.getElementById(id).classList.add('show');
+  }
+
+  async function checkPhone() {
+    const phone = document.getElementById('phoneInput').value.trim();
+    if (!phone) return;
+
+    const btn = document.getElementById('checkBtn');
+    btn.disabled = true;
+    showMsg('msgChecking');
+
+    document.getElementById('daysSection').classList.remove('show');
+    document.getElementById('confirmSection').classList.remove('show');
+    selectedDays.clear();
+    renderTimePanels();
+
+    try {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), API_TIMEOUT);
+
+      const response = await fetch(`${API_BASE}/check-number`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${API_TOKEN}`
+        },
+        body: JSON.stringify({ phone }),
+        signal: controller.signal
+      });
+
+      clearTimeout(timer);
+      const data = await response.json();
+
+      if (data.success === true) {
+        verifiedPhone = phone;
+        showMsg('msgFound');
+        document.getElementById('daysSection').classList.add('show');
+        document.getElementById('daysSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        showMsg('msgError');
+      }
+
+    } catch (err) {
+      const msgEl = document.getElementById('msgNetError');
+      if (err.name === 'AbortError') {
+        msgEl.textContent = '⏱ انتهت مهلة الاتصال، يرجى المحاولة مرة أخرى.';
+      } else {
+        msgEl.textContent = '⚠️ خطأ في الشبكة، يرجى المحاولة مرة أخرى.';
+      }
+      showMsg('msgNetError');
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  document.getElementById('phoneInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') checkPhone();
+  });
+
+  function toggleDay(btn) {
+    const day = btn.dataset.day;
+    if (btn.classList.contains('active')) {
+      btn.classList.remove('active');
+      selectedDays.delete(day);
+    } else {
+      btn.classList.add('active');
+      selectedDays.set(day, { hour: '12', minute: '00', period: 'am' });
+    }
+    renderTimePanels();
+    updateConfirmVisibility();
+  }
+
+  function toggleAllDays() {
+    const dayBtns = document.querySelectorAll('.day-btn');
+    const allSelected = [...dayBtns].every(b => b.classList.contains('active'));
+    dayBtns.forEach(btn => {
+      if (allSelected) {
+        btn.classList.remove('active');
+        selectedDays.delete(btn.dataset.day);
+      } else {
+        btn.classList.add('active');
+        selectedDays.set(btn.dataset.day, { hour: '12', minute: '00', period: 'am' });
+      }
+    });
+    renderTimePanels();
+    updateConfirmVisibility();
+  }
+
+  function renderTimePanels() {
+    const container = document.getElementById('timePanels');
+    container.innerHTML = '';
+
+    selectedDays.forEach((time, day) => {
+      const panel = document.createElement('div');
+      panel.className = 'time-panel show';
+      panel.dataset.day = day;
+
+      let hourOpts = '';
+      for (let h = 1; h <= 12; h++) {
+        const val = String(h);
+        hourOpts += `<option value="${val}" ${time.hour === val ? 'selected' : ''}>${h}</option>`;
+      }
+
+      let minOpts = '';
+      for (let m = 0; m <= 59; m++) {
+        const val = String(m).padStart(2, '0');
+        minOpts += `<option value="${val}" ${time.minute === val ? 'selected' : ''}>${val}</option>`;
+      }
+
+      panel.innerHTML = `
+        <span class="time-panel-label">${day}</span>
+        <select class="time-select" onchange="updateTime('${day}','hour',this.value)">${hourOpts}</select>
+        <span style="color:var(--text-muted);font-size:18px;font-weight:900">:</span>
+        <select class="time-select" onchange="updateTime('${day}','minute',this.value)">${minOpts}</select>
+        <div class="period-toggle">
+          <button class="period-btn ${time.period === 'am' ? 'active' : ''}"
+            onclick="setPeriod('${day}','am',this)">صباحاً</button>
+          <button class="period-btn ${time.period === 'pm' ? 'active' : ''}"
+            onclick="setPeriod('${day}','pm',this)">مساءً</button>
+        </div>
+      `;
+      container.appendChild(panel);
+    });
+  }
+
+  function updateTime(day, field, value) {
+    if (selectedDays.has(day)) selectedDays.get(day)[field] = value;
+  }
+
+  function setPeriod(day, period, clickedBtn) {
+    if (selectedDays.has(day)) {
+      selectedDays.get(day).period = period;
+      const panel = clickedBtn.closest('.time-panel');
+      panel.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+      clickedBtn.classList.add('active');
+    }
+  }
+
+  function updateConfirmVisibility() {
+    const sec = document.getElementById('confirmSection');
+    if (selectedDays.size > 0) {
+      sec.classList.add('show');
+    } else {
+      sec.classList.remove('show');
+      document.getElementById('confirmResult').classList.remove('show');
+    }
+  }
+
+  async function confirmSchedule() {
+    const btn = document.getElementById('confirmBtn');
+    const resultEl = document.getElementById('confirmResult');
+    if (selectedDays.size === 0) return;
+
+    btn.disabled = true;
+    btn.textContent = '⟳ جاري الحفظ...';
+    resultEl.classList.remove('show');
+
+    const schedule = [];
+    selectedDays.forEach((time, day) => {
+      schedule.push({ day, hour: time.hour, minute: time.minute, period: time.period });
+    });
+
+    try {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), API_TIMEOUT);
+
+      const response = await fetch(`${API_BASE}/save-schedule`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${API_TOKEN}`
+        },
+        body: JSON.stringify({ phone: verifiedPhone, schedule }),
+        signal: controller.signal
+      });
+
+      clearTimeout(timer);
+      const data = await response.json();
+
+      if (response.ok || data.success) {
+        btn.classList.add('success');
+        btn.textContent = '✓ تم التأكيد';
+        resultEl.classList.add('show');
+      } else {
+        throw new Error('server error');
+      }
+
+    } catch {
+      btn.disabled = false;
+      btn.textContent = 'تأكيد';
+      const msgEl = document.getElementById('msgNetError');
+      msgEl.textContent = '⚠️ فشل في حفظ الجدولة، يرجى المحاولة مرة أخرى.';
+      showMsg('msgNetError');
+    }
+  }
+</script>
+
+</body>
+</html>
