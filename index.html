@@ -506,14 +506,8 @@
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   // ⚙️ عدّل هذين السطرين فقط
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  const API_TOKEN = "40bc938e9fa33e81553cfc5a05d2dda143c3b73016a47e0afefc10dbddf2b8b4";
-const API_BASE = "curl -X POST https://go.smilesim.net/api/bot/refresh \
-  -H "Authorization: Bearer YOUR_TOKEN_HERE" \
-  -H "Content-Type: application/json" \
-  -d '{"phone_number": "0526851882"}'
-
-
-# Response: {"success": true|false, "message": "..."}";
+  const API_TOKEN = "ضع_توكنك_هنا";
+  const API_BASE  = "https://api.example.com";
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
   const API_TIMEOUT = 10000;
@@ -531,24 +525,58 @@ const API_BASE = "curl -X POST https://go.smilesim.net/api/bot/refresh \
     document.getElementById(id).classList.add('show');
   }
 
-  async function checkPhone() {              ← 🔴 ابدأ الحذف من هنا
+  async function checkPhone() {
     const phone = document.getElementById('phoneInput').value.trim();
-    if (!phone) { alert('أدخل رقم أولاً'); return; }
+    if (!phone) return;
 
-    console.log('🔍 الرقم:', phone);
-    ...
-    ...
-    ...
+    const btn = document.getElementById('checkBtn');
+    btn.disabled = true;
+    showMsg('msgChecking');
+
+    document.getElementById('daysSection').classList.remove('show');
+    document.getElementById('confirmSection').classList.remove('show');
+    selectedDays.clear();
+    renderTimePanels();
+
+    try {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), API_TIMEOUT);
+
+      const response = await fetch(`${API_BASE}/check-number`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${API_TOKEN}`
+        },
+        body: JSON.stringify({ phone }),
+        signal: controller.signal
+      });
+
+      clearTimeout(timer);
+      const data = await response.json();
+
+      if (data.success === true) {
+        verifiedPhone = phone;
+        showMsg('msgFound');
+        document.getElementById('daysSection').classList.add('show');
+        document.getElementById('daysSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        showMsg('msgError');
+      }
+
     } catch (err) {
-      console.error('❌ خطأ:', err);
-      alert('خطأ:\n' + err.message);
+      const msgEl = document.getElementById('msgNetError');
+      if (err.name === 'AbortError') {
+        msgEl.textContent = '⏱ انتهت مهلة الاتصال، يرجى المحاولة مرة أخرى.';
+      } else {
+        msgEl.textContent = '⚠️ خطأ في الشبكة، يرجى المحاولة مرة أخرى.';
+      }
       showMsg('msgNetError');
+    } finally {
+      btn.disabled = false;
     }
-  }                                           ← 🔴 انتهي الحذف هنا (آخر } لوحدها)
+  }
 
-                                              ← (سطر فاضي خلّيه)
-
-  document.getElementById('phoneInput')...    ← ✅ هذا لا تحذفه!
   document.getElementById('phoneInput').addEventListener('keydown', e => {
     if (e.key === 'Enter') checkPhone();
   });
