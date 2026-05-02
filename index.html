@@ -133,22 +133,58 @@ function showMsg(id){
   });
   if(id) document.getElementById(id).classList.add("show");
 }
+var API_URL = "https://go.smilesim.net/api/bot/refresh";
+var API_TOKEN = "40bc938e9fa33e81553cfc5a05d2dda143c3b73016a47e0afefc10dbddf2b8b4";
 
 function checkPhone(){
   var phone = document.getElementById("phoneInput").value.trim();
   if(!phone){ alert("الرجاء إدخال الرقم"); return; }
+
+  var btn = document.getElementById("checkBtn");
+  btn.disabled = true;
   showMsg("msgChecking");
-  setTimeout(function(){
-    if(phone.length >= 9){
+
+  document.getElementById("daysSection").classList.remove("show");
+  document.getElementById("confirmSection").classList.remove("show");
+  selectedDays = {};
+  renderTimePanels();
+
+  fetch(API_URL, {
+    method: "POST",
+    headers: {
+      "Authorization": "Bearer " + API_TOKEN,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ phone_number: phone })
+  })
+  .then(function(res){ return res.json(); })
+  .then(function(data){
+    console.log("API response:", data);
+    if(data.success === true){
       verifiedPhone = phone;
       showMsg("msgFound");
       document.getElementById("daysSection").classList.add("show");
+      document.getElementById("daysSection").scrollIntoView({behavior:"smooth"});
     } else {
+      var errEl = document.getElementById("msgError");
+      if(data.message){ 
+        errEl.textContent = "❌ " + data.message; 
+      } else {
+        errEl.textContent = "❌ عذراً، رقمك غير مدرج تحت وكالة الفؤاد تيلكوم";
+      }
       showMsg("msgError");
     }
-  }, 1500);
+  })
+  .catch(function(err){
+    console.error("API error:", err);
+    var errEl = document.getElementById("msgError");
+    errEl.textContent = "⚠️ خطأ في الاتصال بالخادم. تأكد من الإنترنت والمحاولة مرة أخرى.";
+    showMsg("msgError");
+  })
+  .then(function(){
+    btn.disabled = false;
+  });
 }
-
 document.getElementById("phoneInput").addEventListener("keydown", function(e){
   if(e.key === "Enter") checkPhone();
 });
