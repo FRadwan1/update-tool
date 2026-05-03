@@ -170,8 +170,7 @@ function checkPhone(){
       document.getElementById("daysSection").scrollIntoView({behavior:"smooth"});
     } else {
       var el = document.getElementById("msgError");
-      el.textContent = data.message ? "❌ " + data.message : "❌ عذراً، رقمك غير مدرج تحت وكالة الفؤاد تيلكوم";
-      showMsg("msgError");
+    el.textContent = "❌ عذراً، رقمك غير مدرج تحت وكالة الفؤاد تيلكوم";      showMsg("msgError");
     }
   })
   .catch(function(err){
