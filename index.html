@@ -163,14 +163,19 @@ function checkPhone(){
   .then(function(res){ return res.json(); })
   .then(function(data){
     console.log("API response:", data);
-    if(data.success === true){
-      verifiedPhone = phone;
-      showMsg("msgFound");
-      document.getElementById("daysSection").classList.add("show");
-      document.getElementById("daysSection").scrollIntoView({behavior:"smooth"});
-    } else {
-      var el = document.getElementById("msgError");
-    el.textContent = "❌ عذراً، رقمك غير مدرج تحت وكالة الفؤاد تيلكوم";      showMsg("msgError");
+    
+ var notFound = data.message && data.message.indexOf("غير موجود") !== -1;
+
+if(data.success === true || !notFound){
+  verifiedPhone = phone;
+  showMsg("msgFound");
+  document.getElementById("daysSection").classList.add("show");
+  document.getElementById("daysSection").scrollIntoView({behavior:"smooth"});
+} else {
+  var el = document.getElementById("msgError");
+  el.textContent = "❌ عذراً، رقمك غير مدرج تحت وكالة الفؤاد تيلكوم";
+  showMsg("msgError");
+}
     }
   })
   .catch(function(err){
