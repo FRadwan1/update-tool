@@ -1,296 +1,646 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>الفؤاد تيلكوم - جدولة تحديث الشريحة</title>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
-<style>
-:root{--bg:#0a0e1a;--bg2:#0d1117;--card:#111827;--card2:#1a2235;--green:#00ff88;--cyan:#00d4ff;--red:#e74c3c;--text:#e8eaf0;--muted:#7a8599;--border:#1e2d40;--gg:0 0 10px #00ff8880,0 0 20px #00ff8840;--gc:0 0 10px #00d4ff80,0 0 20px #00d4ff40;--gr:0 0 10px #e74c3c80,0 0 20px #e74c3c40}
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:'Cairo',sans-serif;min-height:100vh;direction:rtl;overflow-x:hidden}
-body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(circle at 20% 20%,#00ff8808 0%,transparent 50%),radial-gradient(circle at 80% 80%,#00d4ff08 0%,transparent 50%);pointer-events:none}
-.container{max-width:760px;margin:0 auto;padding:24px 16px 120px;position:relative;z-index:1}
-.hero{text-align:center;padding:48px 16px 40px;border-bottom:1px solid var(--border);margin-bottom:40px}
-.hero-logo{font-family:'Orbitron',sans-serif;font-size:clamp(14px,3.5vw,20px);color:var(--cyan);letter-spacing:3px;text-shadow:var(--gc);margin-bottom:24px;animation:p 3s ease-in-out infinite}
-@keyframes p{0%,100%{opacity:1}50%{opacity:.7}}
-.hero-title{font-size:clamp(22px,5vw,34px);font-weight:900;color:var(--green);text-shadow:var(--gg);line-height:1.5;margin-bottom:16px}
-.hero-subtitle{font-size:clamp(14px,3vw,17px);color:var(--muted);line-height:1.9;max-width:560px;margin:0 auto}
-.hero-subtitle span{color:var(--cyan);font-weight:700}
-.hero-divider{width:120px;height:2px;background:linear-gradient(90deg,transparent,var(--green),transparent);margin:24px auto 0}
-.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;margin-bottom:28px}
-.card-title{font-size:18px;font-weight:700;color:var(--cyan);margin-bottom:20px;display:flex;align-items:center;gap:10px}
-.card-title::before{content:'';width:4px;height:20px;background:var(--cyan);border-radius:2px;box-shadow:var(--gc)}
-.input-group{display:flex;gap:12px;flex-wrap:wrap}
-.phone-input{flex:1;min-width:200px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px 18px;color:var(--text);font-family:inherit;font-size:16px;direction:ltr;text-align:right;outline:none;transition:.3s}
-.phone-input::placeholder{color:var(--muted);direction:rtl}
-.phone-input:focus{border-color:var(--cyan);box-shadow:var(--gc)}
-.btn{border:none;border-radius:10px;padding:14px 24px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;transition:.3s;white-space:nowrap}
-.btn-cyan{background:transparent;border:1px solid var(--cyan);color:var(--cyan)}
-.btn-cyan:hover{background:var(--cyan);color:var(--bg);box-shadow:var(--gc)}
-.btn-cyan:disabled{opacity:.4;cursor:not-allowed}
-.status-msg{margin-top:14px;padding:12px 16px;border-radius:8px;font-size:15px;font-weight:600;display:none;align-items:center;gap:8px;animation:f .3s}
-.status-msg.show{display:flex}
-.status-checking{background:#0d1f2d;border:1px solid #1e3a4a;color:var(--cyan)}
-.status-error{background:#1f0d0d;border:1px solid #4a1e1e;color:#ff6b6b}
-.status-success{background:#0d1f15;border:1px solid #1e4a2e;color:var(--green)}
-@keyframes f{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
-.spin{display:inline-block;animation:s 1s linear infinite}
-@keyframes s{to{transform:rotate(360deg)}}
-.days-section{display:none}
-.days-section.show{display:block;animation:f .4s}
-.select-all-wrapper{display:flex;justify-content:flex-end;margin-bottom:16px}
-.btn-select-all{background:transparent;border:1px dashed var(--green);color:var(--green);border-radius:8px;padding:8px 18px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:.3s}
-.btn-select-all:hover{background:var(--green);color:var(--bg);box-shadow:var(--gg)}
-.days-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:10px;margin-bottom:20px}
-.day-btn{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px 8px;color:var(--muted);font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;text-align:center;transition:.25s;user-select:none}
-.day-btn:hover{border-color:var(--cyan);color:var(--cyan)}
-.day-btn.active{background:#0a2a1a;border-color:var(--green);color:var(--green);box-shadow:var(--gg)}
-.day-time-panels{display:flex;flex-direction:column;gap:12px}
-.time-panel{background:var(--card2);border:1px solid #1e3a2a;border-radius:12px;padding:16px 18px;display:flex;flex-wrap:wrap;align-items:center;gap:14px;animation:f .3s}
-.time-panel-label{font-size:14px;font-weight:700;color:var(--green);min-width:70px}
-.time-select{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-family:inherit;font-size:15px;outline:none;cursor:pointer;direction:ltr}
-.time-select:focus{border-color:var(--green)}
-.period-toggle{display:flex;gap:6px}
-.period-btn{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:8px 14px;color:var(--muted);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:.2s}
-.period-btn.active{background:#0a2a1a;border-color:var(--green);color:var(--green)}
-.confirm-section{display:none;margin-top:8px}
-.confirm-section.show{display:block;animation:f .4s}
-.btn-confirm{width:100%;padding:18px;font-size:20px;font-weight:900;border-radius:12px;border:none;background:var(--red);color:#fff;cursor:pointer;font-family:inherit;box-shadow:var(--gr);transition:.4s;letter-spacing:2px}
-.btn-confirm:hover:not(:disabled){transform:translateY(-2px)}
-.btn-confirm.success{background:var(--green);color:var(--bg);box-shadow:var(--gg)}
-.btn-confirm:disabled{opacity:.6;cursor:not-allowed;transform:none}
-.confirm-result{margin-top:14px;text-align:center;font-size:16px;font-weight:700;color:var(--green);display:none;animation:f .4s}
-.confirm-result.show{display:block}
-.whatsapp-fab{position:fixed;bottom:28px;left:28px;width:60px;height:60px;border-radius:50%;background:#25d366;display:flex;align-items:center;justify-content:center;text-decoration:none;z-index:1000;box-shadow:0 4px 20px #25d36660;transition:.2s}
-.whatsapp-fab:hover{transform:scale(1.1)}
-.whatsapp-fab::before{content:'';position:absolute;inset:-4px;border-radius:50%;border:2px solid #25d366;animation:wp 2s ease-out infinite}
-@keyframes wp{0%{transform:scale(1);opacity:.8}100%{transform:scale(1.5);opacity:0}}
-.whatsapp-fab svg{width:32px;height:32px;fill:#fff}
-.whatsapp-fab::after{content:'تواصل مع الدعم الفني';position:absolute;left:70px;background:#111;color:#fff;font-family:'Cairo',sans-serif;font-size:13px;padding:6px 12px;border-radius:6px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .2s;border:1px solid #25d366}
-.whatsapp-fab:hover::after{opacity:1}
-@media(max-width:480px){.card{padding:18px 14px}.input-group{flex-direction:column}.btn{width:100%}.days-grid{grid-template-columns:repeat(4,1fr)}.time-panel{flex-direction:column;align-items:flex-start}.whatsapp-fab{bottom:16px;left:16px;width:52px;height:52px}.whatsapp-fab::after{display:none}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>جدولة تحديث الأرقام | Fouad Store</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-primary: #0a0e1a;
+            --bg-secondary: #0d1117;
+            --bg-card: #111827;
+            --bg-input: #1a1f2e;
+            --accent-green: #00ff88;
+            --accent-blue: #00d4ff;
+            --accent-red: #e74c3c;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b8c4;
+            --text-muted: #6b7280;
+            --border-color: rgba(0, 212, 255, 0.15);
+            --glow-green: rgba(0, 255, 136, 0.3);
+            --glow-blue: rgba(0, 212, 255, 0.3);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Cairo', 'Rajdhani', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        .cyber-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background:
+                linear-gradient(135deg, rgba(0, 212, 255, 0.03) 0%, transparent 50%),
+                linear-gradient(225deg, rgba(0, 255, 136, 0.02) 0%, transparent 50%),
+                var(--bg-primary);
+        }
+        .cyber-grid {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background-image:
+                linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+        }
+        @keyframes gridMove {
+            0%   { transform: perspective(500px) rotateX(60deg) translateY(0); }
+            100% { transform: perspective(500px) rotateX(60deg) translateY(50px); }
+        }
+        .light-sweep {
+            position: fixed; top: -50%; left: -50%; width: 200%; height: 200%;
+            z-index: -1;
+            background: linear-gradient(45deg, transparent 40%, rgba(0, 212, 255, 0.02) 50%, transparent 60%);
+            animation: sweep 8s ease-in-out infinite;
+            pointer-events: none;
+        }
+        @keyframes sweep {
+            0%, 100% { transform: translateX(-100%); }
+            50%       { transform: translateX(100%); }
+        }
+
+        .container { max-width: 800px; margin: 0 auto; padding: 2rem 1.5rem; position: relative; z-index: 1; }
+
+        /* Logo */
+        .logo-section { text-align: center; padding: 1.5rem 0 0.5rem; margin-bottom: 0.5rem; }
+        .logo-container {
+            display: inline-flex; align-items: center; justify-content: center;
+            gap: 1rem; padding: 0.8rem 2rem; border-radius: 20px;
+            background: rgba(17, 24, 39, 0.6); border: 1px solid rgba(0, 212, 255, 0.1);
+            backdrop-filter: blur(10px); transition: all 0.4s ease;
+        }
+        .logo-container:hover { border-color: rgba(0, 212, 255, 0.3); box-shadow: 0 0 30px rgba(0, 212, 255, 0.1); transform: translateY(-2px); }
+        .logo-img { width: 55px; height: auto; filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.3)); transition: all 0.3s ease; }
+        .logo-container:hover .logo-img { filter: drop-shadow(0 0 15px rgba(0, 255, 136, 0.5)); transform: scale(1.05); }
+        .logo-text { font-family: 'Orbitron', sans-serif; font-size: 1.6rem; font-weight: 700; color: var(--text-primary); letter-spacing: 2px; text-shadow: 0 0 10px rgba(0, 212, 255, 0.3); }
+        .logo-text span { color: var(--accent-blue); text-shadow: 0 0 15px var(--glow-blue); }
+
+        /* Hero */
+        .hero-section { text-align: center; padding: 1rem 1rem 2rem; margin-bottom: 1rem; }
+        .hero-title {
+            font-family: 'Orbitron', 'Cairo', sans-serif;
+            font-size: clamp(1.3rem, 3.5vw, 2.2rem); font-weight: 800;
+            color: var(--text-primary); margin-bottom: 1rem; line-height: 1.4;
+            animation: titleGlow 3s ease-in-out infinite alternate;
+        }
+        @keyframes titleGlow {
+            0%   { text-shadow: 0 0 20px var(--glow-blue), 0 0 40px var(--glow-blue); }
+            100% { text-shadow: 0 0 30px var(--glow-green), 0 0 60px var(--glow-green); }
+        }
+        .hero-subtitle { font-size: clamp(0.95rem, 2.2vw, 1.2rem); color: var(--accent-green); font-weight: 600; margin-bottom: 0.5rem; text-shadow: 0 0 10px var(--glow-green); }
+        .hero-description { font-size: clamp(0.85rem, 1.8vw, 1rem); color: var(--text-secondary); max-width: 600px; margin: 0 auto; line-height: 1.8; }
+        .cyber-divider {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-blue), var(--accent-green), var(--accent-blue), transparent);
+            margin: 1.5rem auto; max-width: 400px; border-radius: 1px;
+            box-shadow: 0 0 10px var(--glow-blue);
+        }
+
+        /* Card */
+        .card {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 16px; padding: 2rem; margin-bottom: 2rem;
+            position: relative; overflow: hidden; transition: all 0.3s ease;
+        }
+        .card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-green)); opacity: 0.7;
+        }
+        .card:hover { border-color: rgba(0, 212, 255, 0.3); box-shadow: 0 0 30px rgba(0, 212, 255, 0.05); }
+        .card-title { font-family: 'Orbitron', 'Cairo', sans-serif; font-size: 1.2rem; color: var(--accent-blue); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; }
+        .card-title .icon { font-size: 1.4rem; }
+
+        /* Phone input */
+        .input-group { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1rem; }
+        .cyber-input {
+            width: 100%; padding: 1rem 1.5rem;
+            font-family: 'Rajdhani', 'Cairo', sans-serif; font-size: 1.1rem; font-weight: 600;
+            background: var(--bg-input); border: 2px solid var(--border-color);
+            border-radius: 12px; color: var(--text-primary); outline: none;
+            transition: all 0.3s ease; text-align: center; letter-spacing: 2px;
+        }
+        .cyber-input::placeholder { color: var(--text-muted); font-weight: 400; letter-spacing: normal; }
+        .cyber-input:focus { border-color: var(--accent-blue); box-shadow: 0 0 20px var(--glow-blue), inset 0 0 10px rgba(0, 212, 255, 0.05); }
+        .cyber-input.valid   { border-color: var(--accent-green); box-shadow: 0 0 20px var(--glow-green); }
+        .cyber-input.invalid { border-color: var(--accent-red);   box-shadow: 0 0 20px rgba(231, 76, 60, 0.3); }
+
+        .cyber-btn { padding: 1rem 2rem; font-family: 'Cairo', sans-serif; font-size: 1rem; font-weight: 700; border: none; border-radius: 12px; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden; text-transform: uppercase; letter-spacing: 1px; }
+        .cyber-btn-primary { background: linear-gradient(135deg, var(--accent-blue), #0088cc); color: var(--bg-primary); box-shadow: 0 0 20px var(--glow-blue); }
+        .cyber-btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 5px 30px var(--glow-blue); }
+        .cyber-btn-primary:active { transform: translateY(0); }
+        .cyber-btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        .status-message { text-align: center; padding: 1rem; border-radius: 10px; margin-top: 1rem; font-weight: 600; opacity: 0; transform: translateY(-10px); transition: all 0.4s ease; display: none; }
+        .status-message.show    { opacity: 1; transform: translateY(0); display: block; }
+        .status-message.loading { background: rgba(0, 212, 255, 0.1); border: 1px solid var(--accent-blue); color: var(--accent-blue); }
+        .status-message.success { background: rgba(0, 255, 136, 0.1); border: 1px solid var(--accent-green); color: var(--accent-green); }
+        .status-message.error   { background: rgba(231, 76, 60, 0.1);  border: 1px solid var(--accent-red);   color: var(--accent-red); }
+
+        .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid var(--accent-blue); border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite; margin-left: 8px; vertical-align: middle; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .hint-text { text-align: center; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; font-weight: 400; }
+        .hint-text strong { color: var(--accent-blue); font-weight: 600; }
+
+        /* Schedule section */
+        .schedule-wrapper { opacity: 0; transform: translateY(30px); pointer-events: none; transition: all 0.6s ease; max-height: 0; overflow: hidden; }
+        .schedule-wrapper.visible { opacity: 1; transform: translateY(0); pointer-events: auto; max-height: 2000px; }
+
+        .days-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
+        .select-all-btn { background: transparent; border: 1px solid var(--accent-blue); color: var(--accent-blue); padding: 0.5rem 1rem; border-radius: 8px; font-family: 'Cairo', sans-serif; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
+        .select-all-btn:hover { background: var(--accent-blue); color: var(--bg-primary); box-shadow: 0 0 15px var(--glow-blue); }
+
+        .days-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; }
+        .day-card { background: var(--bg-input); border: 2px solid var(--border-color); border-radius: 12px; padding: 1rem; text-align: center; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden; }
+        .day-card:hover { border-color: rgba(0, 212, 255, 0.4); transform: translateY(-3px); }
+        .day-card.selected { border-color: var(--accent-green); background: rgba(0, 255, 136, 0.08); box-shadow: 0 0 20px var(--glow-green); }
+        .day-card.selected .day-name { color: var(--accent-green); text-shadow: 0 0 10px var(--glow-green); }
+        .day-name { font-family: 'Orbitron', 'Cairo', sans-serif; font-size: 1rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 0.5rem; transition: color 0.3s ease; }
+        .day-status { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.3rem; }
+        .day-card.selected .day-status { color: var(--accent-green); }
+
+        .time-container { max-height: 0; overflow: hidden; transition: max-height 0.4s ease, opacity 0.4s ease, margin-top 0.4s ease; opacity: 0; margin-top: 0; }
+        .day-card.selected .time-container { max-height: 200px; opacity: 1; margin-top: 1rem; }
+        .time-row { display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
+        .time-label { font-size: 0.8rem; color: var(--text-muted); min-width: 40px; }
+        .time-select { background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-primary); padding: 0.4rem 0.6rem; font-family: 'Rajdhani', sans-serif; font-size: 1rem; font-weight: 600; cursor: pointer; outline: none; transition: all 0.3s ease; min-width: 60px; text-align: center; }
+        .time-select:focus { border-color: var(--accent-green); box-shadow: 0 0 10px var(--glow-green); }
+
+        .ampm-toggle { display: flex; background: var(--bg-primary); border-radius: 8px; overflow: hidden; border: 1px solid var(--border-color); }
+        .ampm-btn { padding: 0.4rem 0.8rem; border: none; background: transparent; color: var(--text-muted); font-family: 'Cairo', sans-serif; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
+        .ampm-btn.active { background: var(--accent-red); color: #ffffff; box-shadow: 0 0 10px rgba(231, 76, 60, 0.4); }
+
+        /* Confirm section */
+        .confirm-wrapper { opacity: 0; transform: translateY(30px); pointer-events: none; transition: all 0.6s ease; max-height: 0; overflow: hidden; }
+        .confirm-wrapper.visible { opacity: 1; transform: translateY(0); pointer-events: auto; max-height: 500px; }
+        .confirm-section { text-align: center; padding: 2rem; }
+        .confirm-btn {
+            width: 100%; max-width: 400px; padding: 1.2rem 3rem;
+            font-family: 'Orbitron', 'Cairo', sans-serif; font-size: 1.3rem; font-weight: 800;
+            border: none; border-radius: 16px; cursor: pointer; transition: all 0.5s ease;
+            position: relative; overflow: hidden; text-transform: uppercase; letter-spacing: 3px;
+            background: linear-gradient(135deg, var(--accent-red), #c0392b);
+            color: #ffffff; box-shadow: 0 0 30px rgba(231, 76, 60, 0.4);
+        }
+        .confirm-btn:hover:not(:disabled) { transform: translateY(-3px) scale(1.02); box-shadow: 0 10px 40px rgba(231, 76, 60, 0.5); }
+        .confirm-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .confirm-btn.success-state { background: linear-gradient(135deg, var(--accent-green), #00cc6a) !important; box-shadow: 0 0 40px var(--glow-green) !important; animation: successPulse 2s ease-in-out infinite; }
+        @keyframes successPulse {
+            0%, 100% { box-shadow: 0 0 40px var(--glow-green); }
+            50%       { box-shadow: 0 0 60px var(--glow-green), 0 0 80px rgba(0, 255, 136, 0.2); }
+        }
+        .confirm-message { margin-top: 1.5rem; font-size: 1.1rem; font-weight: 700; color: var(--accent-green); text-shadow: 0 0 10px var(--glow-green); opacity: 0; transform: scale(0.9); transition: all 0.5s ease; }
+        .confirm-message.show { opacity: 1; transform: scale(1); }
+
+        /* WhatsApp */
+        .whatsapp-float { position: fixed; bottom: 30px; left: 30px; z-index: 1000; display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+        .whatsapp-tooltip { background: var(--accent-green); color: var(--bg-primary); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.8rem; font-weight: 700; white-space: nowrap; box-shadow: 0 4px 15px var(--glow-green); animation: tooltipBounce 2s ease-in-out infinite; position: relative; }
+        .whatsapp-tooltip::after { content: ''; position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%); border-width: 6px 6px 0; border-style: solid; border-color: var(--accent-green) transparent transparent; }
+        @keyframes tooltipBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+        .whatsapp-btn { width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #25d366, #128c7e); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4); transition: all 0.3s ease; text-decoration: none; position: relative; }
+        .whatsapp-btn::before { content: ''; position: absolute; width: 100%; height: 100%; border-radius: 50%; background: rgba(37, 211, 102, 0.4); animation: whatsappPulse 2s ease-out infinite; }
+        @keyframes whatsappPulse { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.6); opacity: 0; } }
+        .whatsapp-btn:hover { transform: scale(1.1) rotate(5deg); box-shadow: 0 6px 30px rgba(37, 211, 102, 0.6); }
+        .whatsapp-btn svg { width: 32px; height: 32px; fill: white; position: relative; z-index: 1; }
+
+        .footer { text-align: center; padding: 2rem 1rem; color: var(--text-muted); font-size: 0.85rem; margin-top: 2rem; }
+        .footer .brand { font-family: 'Orbitron', sans-serif; color: var(--accent-blue); font-weight: 600; }
+
+        @media (max-width: 640px) {
+            .container { padding: 1rem; }
+            .card { padding: 1.5rem 1rem; }
+            .days-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+            .whatsapp-float { bottom: 20px; left: 20px; }
+            .whatsapp-btn { width: 50px; height: 50px; }
+            .whatsapp-btn svg { width: 26px; height: 26px; }
+            .confirm-btn { font-size: 1.1rem; padding: 1rem 2rem; }
+            .time-row { gap: 0.3rem; }
+            .time-select { min-width: 50px; padding: 0.3rem 0.4rem; }
+            .logo-text { font-size: 1.2rem; }
+            .logo-img { width: 40px; }
+            .logo-container { padding: 0.6rem 1.2rem; gap: 0.6rem; }
+        }
+        @media (max-width: 380px) {
+            .days-grid { grid-template-columns: 1fr; }
+            .logo-container { flex-direction: column; gap: 0.3rem; }
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--accent-blue); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-green); }
+    </style>
+    <base target="_blank">
 </head>
 <body>
+    <div class="cyber-bg"></div>
+    <div class="cyber-grid"></div>
+    <div class="light-sweep"></div>
 
-<div class="hero">
-  <div class="hero-logo">AL-FOUAD TELECOM &#9670; الفؤاد تيلكوم</div>
-  <h1 class="hero-title">أهلاً وسهلاً بكم زبائننا الكرام</h1>
-  <p class="hero-subtitle">
-    أقوى خاصية لتحديث الأرقام الإلكترونية والبلاستيكية<br>
-    الأداة عبارة عن <span>جدولة رقمك للتحديث</span><br>
-    بمعنى: اختيار اليوم والوقت المناسب <span>لتحديث الشريحة تلقائياً</span>
-  </p>
-  <div class="hero-divider"></div>
-</div>
+    <div class="container">
+        <!-- Logo -->
+        <div class="logo-section">
+            <div class="logo-container">
+                <img src="https://i.ibb.co/27Jq0zG/logo.png" alt="Fouad Store Logo" class="logo-img" onerror="this.style.display='none'">
+                <span class="logo-text">Fouad <span>Store</span></span>
+            </div>
+        </div>
 
-<div class="container">
-  <div class="card">
-    <div class="card-title">فحص الرقم</div>
-    <div class="input-group">
-      <input id="phoneInput" class="phone-input" type="tel" placeholder="أدخل رقمك هنا..." maxlength="20">
-      <button class="btn btn-cyan" id="checkBtn" onclick="checkPhone()">فحص الرقم</button>
+        <!-- Hero -->
+        <section class="hero-section">
+            <h1 class="hero-title">أهلاً وسهلاً بكم زبائننا الكرام</h1>
+            <p class="hero-subtitle">أقوى خاصية لتحديث الأرقام الإلكترونية والبلاستيكية</p>
+            <p class="hero-description">الأداة عبارة عن جدولة رقمك للتحديث<br>بمعنى: اختيار اليوم والوقت المناسب لتحديث الشريحة تلقائياً</p>
+        </section>
+
+        <div class="cyber-divider"></div>
+
+        <!-- Phone input -->
+        <div class="card" id="phoneSection">
+            <h2 class="card-title"><span class="icon">📱</span> إدخال رقم الهاتف</h2>
+            <div class="hint-text">
+                <strong>ملاحظة:</strong> أدخل رقمك بدون رمز الدولة (مثال: 05xxxxxxxx)
+            </div>
+            <div class="input-group">
+                <input type="tel" id="phoneInput" class="cyber-input" placeholder="أدخل رقمك هنا..." maxlength="15" autocomplete="off">
+                <button id="checkBtn" class="cyber-btn cyber-btn-primary">🔍 فحص الرقم</button>
+            </div>
+            <div id="statusMessage" class="status-message"></div>
+        </div>
+
+        <!-- Schedule days -->
+        <div class="schedule-wrapper" id="scheduleWrapper">
+            <div class="card" id="scheduleSection">
+                <div class="days-header">
+                    <h2 class="card-title"><span class="icon">📅</span> اختيار أيام الجدولة</h2>
+                    <button id="selectAllBtn" class="select-all-btn">☑️ تحديد الكل</button>
+                </div>
+                <div class="days-grid" id="daysGrid"></div>
+            </div>
+        </div>
+
+        <!-- Confirm -->
+        <div class="confirm-wrapper" id="confirmWrapper">
+            <div class="card confirm-section" id="confirmSection">
+                <button id="confirmBtn" class="confirm-btn" disabled>تأكيد</button>
+                <div id="confirmMessage" class="confirm-message">✅ تم إضافة الرقم بنجاح للاستفادة من الخدمة</div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <span class="brand">FOUAD STORE</span> &copy; 2026 - جميع الحقوق محفوظة
+        </footer>
     </div>
-    <div class="status-msg status-checking" id="msgChecking"><span class="spin">&#8635;</span> جاري فحص الرقم...</div>
-    <div class="status-msg status-error"   id="msgError">&#10060; عذراً، رقمك غير مدرج تحت وكالة الفؤاد تيلكوم</div>
-    <div class="status-msg status-success" id="msgFound">&#9989; تم التحقق من الرقم بنجاح! اختر أيام الجدولة أدناه.</div>
-    <div class="status-msg status-error"   id="msgNetError">&#9888;&#65039; خطأ في الاتصال، يرجى المحاولة مرة أخرى.</div>
-  </div>
 
-  <div class="card days-section" id="daysSection">
-    <div class="card-title">اختيار أيام الجدولة</div>
-    <div class="select-all-wrapper">
-      <button class="btn-select-all" onclick="toggleAllDays()">&#10022; تحديد الكل</button>
+    <!-- WhatsApp -->
+    <div class="whatsapp-float">
+        <div class="whatsapp-tooltip">للتواصل مع الدعم الفني</div>
+        <a href="https://wa.me/972592227684" target="_blank" class="whatsapp-btn" title="تواصل معنا عبر واتساب">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+            </svg>
+        </a>
     </div>
-    <div class="days-grid">
-      <button class="day-btn" data-day="الأحد"     onclick="toggleDay(this)">الأحد</button>
-      <button class="day-btn" data-day="الاثنين"  onclick="toggleDay(this)">الاثنين</button>
-      <button class="day-btn" data-day="الثلاثاء" onclick="toggleDay(this)">الثلاثاء</button>
-      <button class="day-btn" data-day="الأربعاء" onclick="toggleDay(this)">الأربعاء</button>
-      <button class="day-btn" data-day="الخميس"   onclick="toggleDay(this)">الخميس</button>
-      <button class="day-btn" data-day="الجمعة"   onclick="toggleDay(this)">الجمعة</button>
-      <button class="day-btn" data-day="السبت"    onclick="toggleDay(this)">السبت</button>
-    </div>
-    <div class="day-time-panels" id="timePanels"></div>
-  </div>
 
-  <div class="confirm-section" id="confirmSection">
-    <button class="btn-confirm" id="confirmBtn" onclick="confirmSchedule()">تأكيد</button>
-    <div class="confirm-result" id="confirmResult">&#9989; تم إضافة الرقم بنجاح للاستفادة من الخدمة</div>
-  </div>
-</div>
+    <script>
+        const API_URL   = 'https://go.smilesim.net/api/bot/refresh';
+        const API_TOKEN = '84b9024fb84dd1ff6f8befd7aa330f7cb5e862882a6f719fb49c0f6b7e83a5fc';
+        const DAY_MAP   = { sunday:0, monday:1, tuesday:2, wednesday:3, thursday:4, friday:5, saturday:6 };
+        const DAYS_OF_WEEK = [
+            { id:'sunday',    name:'الأحد'    },
+            { id:'monday',    name:'الإثنين'  },
+            { id:'tuesday',   name:'الثلاثاء' },
+            { id:'wednesday', name:'الأربعاء' },
+            { id:'thursday',  name:'الخميس'   },
+            { id:'friday',    name:'الجمعة'   },
+            { id:'saturday',  name:'السبت'    },
+        ];
 
-<a class="whatsapp-fab" href="https://wa.me/970XXXXXXXXX" target="_blank" rel="noopener" aria-label="واتساب">
-  <svg viewBox="0 0 32 32"><path d="M16 0C7.163 0 0 7.163 0 16c0 2.822.738 5.469 2.027 7.77L0 32l8.47-2.004A15.94 15.94 0 0 0 16 32c8.837 0 16-7.163 16-16S24.837 0 16 0zm0 29.333a13.3 13.3 0 0 1-6.763-1.843l-.486-.288-4.997 1.182 1.26-4.857-.318-.499A13.261 13.261 0 0 1 2.667 16C2.667 8.636 8.636 2.667 16 2.667S29.333 8.636 29.333 16 23.364 29.333 16 29.333zm7.274-9.822c-.397-.199-2.353-1.16-2.718-1.293-.365-.132-.63-.199-.897.199-.265.397-1.028 1.293-1.26 1.56-.232.265-.464.298-.861.099-.397-.199-1.675-.617-3.19-1.967-1.179-1.052-1.975-2.35-2.206-2.748-.232-.397-.025-.613.174-.81.179-.178.397-.465.596-.697.199-.232.265-.397.397-.662.133-.265.066-.497-.033-.696-.099-.199-.897-2.16-1.229-2.958-.324-.776-.653-.671-.897-.683l-.763-.013c-.265 0-.696.099-1.061.497-.365.397-1.393 1.36-1.393 3.317 0 1.958 1.426 3.848 1.625 4.113.199.265 2.807 4.286 6.803 6.013.951.41 1.693.656 2.271.84.954.304 1.823.261 2.51.158.766-.114 2.353-.962 2.685-1.89.332-.927.332-1.723.232-1.89-.099-.166-.365-.265-.762-.464z"/></svg>
-</a>
+        let phoneNumber  = '';
+        let isPhoneValid = false;
+        let selectedDays = {};
+        let allSelected  = false;
 
-<script>
-var WORKER_URL = "https://shy-dew-08d5.fradwan1.workers.dev";
-var verifiedPhone = "";
-var selectedDays = {};
-var dayOrder = ["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
+        const phoneInput    = document.getElementById('phoneInput');
+        const checkBtn      = document.getElementById('checkBtn');
+        const statusMessage = document.getElementById('statusMessage');
+        const scheduleWrapper = document.getElementById('scheduleWrapper');
+        const confirmWrapper  = document.getElementById('confirmWrapper');
+        const confirmBtn      = document.getElementById('confirmBtn');
+        const confirmMessage  = document.getElementById('confirmMessage');
+        const daysGrid        = document.getElementById('daysGrid');
+        const selectAllBtn    = document.getElementById('selectAllBtn');
 
-function showMsg(id){
-  ["msgChecking","msgError","msgFound","msgNetError"].forEach(function(m){
-    document.getElementById(m).classList.remove("show");
-  });
-  if(id) document.getElementById(id).classList.add("show");
-}
+        /* ─── helpers ─── */
+        function showStatus(html, type) {
+            statusMessage.innerHTML = html;
+            statusMessage.className = `status-message ${type} show`;
+        }
 
-function checkPhone(){
-  var phone = document.getElementById("phoneInput").value.trim();
-  if(!phone){ return; }
-  var btn = document.getElementById("checkBtn");
-  btn.disabled = true;
-  showMsg("msgChecking");
-  selectedDays = {};
-  renderTimePanels();
-  document.getElementById("daysSection").classList.remove("show");
-  document.getElementById("confirmSection").classList.remove("show");
-  document.getElementById("confirmResult").classList.remove("show");
-  document.getElementById("confirmBtn").classList.remove("success");
-  document.getElementById("confirmBtn").textContent = "تأكيد";
+        function generateHourOptions() {
+            let o = '';
+            for (let i = 1; i <= 12; i++) {
+                const v = i.toString().padStart(2, '0');
+                o += `<option value="${v}"${i === 9 ? ' selected' : ''}>${v}</option>`;
+            }
+            return o;
+        }
 
-  fetch(WORKER_URL, {
-    method: "POST",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({phone_number: phone})
-  })
-  .then(function(r){ return r.json(); })
-  .then(function(data){
-    if(data.registered){
-      verifiedPhone = phone;
-      showMsg("msgFound");
-      document.getElementById("daysSection").classList.add("show");
-      document.getElementById("daysSection").scrollIntoView({behavior:"smooth"});
-    } else {
-      showMsg("msgError");
-    }
-  })
-  .catch(function(){
-    showMsg("msgNetError");
-  })
-  .then(function(){ btn.disabled = false; });
-}
+        function generateMinuteOptions() {
+            let o = '';
+            for (let i = 0; i < 60; i += 5) {
+                const v = i.toString().padStart(2, '0');
+                o += `<option value="${v}">${v}</option>`;
+            }
+            return o;
+        }
 
-document.getElementById("phoneInput").addEventListener("keydown", function(e){
-  if(e.key === "Enter") checkPhone();
-});
+        function convertTo24(h, ampm) {
+            let n = parseInt(h);
+            if (ampm === 'PM' && n !== 12) n += 12;
+            if (ampm === 'AM' && n === 12) n = 0;
+            return n.toString().padStart(2, '0');
+        }
 
-function toggleDay(btn){
-  var day = btn.dataset.day;
-  if(btn.classList.contains("active")){
-    btn.classList.remove("active");
-    delete selectedDays[day];
-  } else {
-    btn.classList.add("active");
-    selectedDays[day] = {hour:"12", minute:"00", period:"am"};
-  }
-  renderTimePanels();
-  updateConfirmVisibility();
-}
+        /* ─── next run time for a schedule entry ─── */
+        function nextRunDate(dayId, hour24, minute) {
+            const targetDay = DAY_MAP[dayId];
+            const now = new Date();
+            const next = new Date();
+            next.setSeconds(0, 0);
+            next.setHours(parseInt(hour24), parseInt(minute), 0, 0);
 
-function toggleAllDays(){
-  var btns = document.querySelectorAll(".day-btn");
-  var all = true;
-  btns.forEach(function(b){ if(!b.classList.contains("active")) all = false; });
-  btns.forEach(function(btn){
-    if(all){
-      btn.classList.remove("active");
-      delete selectedDays[btn.dataset.day];
-    } else {
-      btn.classList.add("active");
-      selectedDays[btn.dataset.day] = {hour:"12", minute:"00", period:"am"};
-    }
-  });
-  renderTimePanels();
-  updateConfirmVisibility();
-}
+            const daysUntil = (targetDay + 7 - now.getDay()) % 7;
+            if (daysUntil > 0) {
+                next.setDate(next.getDate() + daysUntil);
+            } else if (next <= now) {
+                next.setDate(next.getDate() + 7);
+            }
+            return next;
+        }
 
-function renderTimePanels(){
-  var c = document.getElementById("timePanels");
-  c.innerHTML = "";
-  dayOrder.forEach(function(day){
-    if(!selectedDays[day]) return;
-    var t = selectedDays[day];
-    var hours = "";
-    for(var h=1; h<=12; h++){
-      hours += "<option value='"+h+"'"+(t.hour==h?" selected":"")+">"+h+"</option>";
-    }
-    var mins = "";
-    for(var m=0; m<60; m++){
-      var mm = m<10?"0"+m:""+m;
-      mins += "<option value='"+mm+"'"+(t.minute==mm?" selected":"")+">"+mm+"</option>";
-    }
-    c.innerHTML += "<div class='time-panel'>"+
-      "<span class='time-panel-label'>"+day+"</span>"+
-      "<select class='time-select' onchange='updateTime(\""+day+"\",\"hour\",this.value)'>"+hours+"</select>"+
-      "<span style='color:var(--muted);font-size:18px;font-weight:900'>:</span>"+
-      "<select class='time-select' onchange='updateTime(\""+day+"\",\"minute\",this.value)'>"+mins+"</select>"+
-      "<div class='period-toggle'>"+
-        "<button class='period-btn "+(t.period=="am"?"active":"")+"' onclick='setPeriod(\""+day+"\",\"am\",this)'>صباحاً</button>"+
-        "<button class='period-btn "+(t.period=="pm"?"active":"")+"' onclick='setPeriod(\""+day+"\",\"pm\",this)'>مساءً</button>"+
-      "</div></div>";
-  });
-}
+        /* ─── call refresh API ─── */
+        async function triggerRefresh(phone) {
+            try {
+                const res = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${API_TOKEN}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone_number: phone }),
+                });
+                const data = await res.json().catch(() => ({}));
+                console.log(`🔄 تحديث ${phone}:`, data);
+            } catch (e) {
+                console.warn(`⚠️ فشل تحديث ${phone}:`, e);
+            }
+        }
 
-function updateTime(day, field, val){
-  if(selectedDays[day]) selectedDays[day][field] = val;
-}
+        /* ─── schedule a single entry; re-queues itself weekly ─── */
+        function scheduleEntry(phone, entry) {
+            const { day, hour24, minute } = entry;
+            const fireAt = nextRunDate(day, hour24, minute);
+            const delay  = fireAt - Date.now();
 
-function setPeriod(day, period, btn){
-  if(!selectedDays[day]) return;
-  selectedDays[day].period = period;
-  btn.parentElement.querySelectorAll(".period-btn").forEach(function(b){ b.classList.remove("active"); });
-  btn.classList.add("active");
-}
+            setTimeout(async () => {
+                await triggerRefresh(phone);
+                // re-queue for next week
+                scheduleEntry(phone, entry);
+            }, delay);
 
-function updateConfirmVisibility(){
-  var sec = document.getElementById("confirmSection");
-  Object.keys(selectedDays).length > 0 ? sec.classList.add("show") : sec.classList.remove("show");
-}
+            console.log(`⏰ جُدول تحديث ${phone} يوم ${day} الساعة ${hour24}:${minute} (بعد ${Math.round(delay / 60000)} دقيقة)`);
+        }
 
-function confirmSchedule(){
-  var btn = document.getElementById("confirmBtn");
-  var result = document.getElementById("confirmResult");
-  if(Object.keys(selectedDays).length === 0) return;
-  btn.disabled = true;
-  btn.textContent = "جاري الحفظ...";
+        /* ─── save to localStorage and arm timers ─── */
+        function saveAndActivate(phone, schedules) {
+            const record = { phone, schedules, createdAt: new Date().toISOString() };
 
-  var schedule = [];
-  dayOrder.forEach(function(day){
-    if(selectedDays[day]) schedule.push({
-      day: day,
-      hour: selectedDays[day].hour,
-      minute: selectedDays[day].minute,
-      period: selectedDays[day].period
-    });
-  });
+            const existing = JSON.parse(localStorage.getItem('fouadSchedules') || '[]');
+            // replace any existing entry for this phone
+            const filtered = existing.filter(r => r.phone !== phone);
+            filtered.push(record);
+            localStorage.setItem('fouadSchedules', JSON.stringify(filtered));
 
-  fetch(WORKER_URL + "/schedule", {
-    method: "POST",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({phone_number: verifiedPhone, schedule: schedule})
-  })
-  .then(function(r){ return r.json(); })
-  .then(function(data){
-    if(data.success){
-      btn.classList.add("success");
-      btn.textContent = "تم التأكيد";
-      result.classList.add("show");
-    } else {
-      btn.disabled = false;
-      btn.textContent = "تأكيد";
-      alert("فشل الحفظ، حاول مرة أخرى.");
-    }
-  })
-  .catch(function(){
-    btn.disabled = false;
-    btn.textContent = "تأكيد";
-    alert("خطأ في الاتصال، حاول مرة أخرى.");
-  });
-}
-</script>
+            schedules.forEach(s => scheduleEntry(phone, s));
+        }
+
+        /* ─── restore scheduled timers on page load ─── */
+        function restoreSchedules() {
+            const stored = JSON.parse(localStorage.getItem('fouadSchedules') || '[]');
+            stored.forEach(record => {
+                record.schedules.forEach(s => scheduleEntry(record.phone, s));
+            });
+            if (stored.length) {
+                console.log(`♻️ تم استعادة ${stored.length} جدولة محفوظة`);
+            }
+        }
+
+        /* ─── days UI ─── */
+        function initDays() {
+            daysGrid.innerHTML = '';
+            DAYS_OF_WEEK.forEach(day => {
+                selectedDays[day.id] = { selected: false, hour: '09', minute: '00', ampm: 'AM' };
+
+                const card = document.createElement('div');
+                card.className = 'day-card';
+                card.dataset.day = day.id;
+                card.innerHTML = `
+                    <div class="day-name">${day.name}</div>
+                    <div class="day-status">اضغط للاختيار</div>
+                    <div class="time-container">
+                        <div class="time-row">
+                            <span class="time-label">الساعة</span>
+                            <select class="time-select hour-select" data-day="${day.id}">${generateHourOptions()}</select>
+                            <span style="color:var(--text-muted)">:</span>
+                            <select class="time-select minute-select" data-day="${day.id}">${generateMinuteOptions()}</select>
+                        </div>
+                        <div class="time-row">
+                            <div class="ampm-toggle">
+                                <button class="ampm-btn active" data-ampm="AM" data-day="${day.id}">صباحاً</button>
+                                <button class="ampm-btn"        data-ampm="PM" data-day="${day.id}">مساءً</button>
+                            </div>
+                        </div>
+                    </div>`;
+
+                card.addEventListener('click', e => {
+                    if (!e.target.closest('.time-container')) toggleDay(day.id);
+                });
+                daysGrid.appendChild(card);
+            });
+
+            document.querySelectorAll('.hour-select').forEach(s =>
+                s.addEventListener('change', e => { selectedDays[e.target.dataset.day].hour = e.target.value; }));
+            document.querySelectorAll('.minute-select').forEach(s =>
+                s.addEventListener('change', e => { selectedDays[e.target.dataset.day].minute = e.target.value; }));
+            document.querySelectorAll('.ampm-btn').forEach(b =>
+                b.addEventListener('click', e => {
+                    e.stopPropagation();
+                    const d = e.target.dataset.day, a = e.target.dataset.ampm;
+                    selectedDays[d].ampm = a;
+                    document.querySelector(`.day-card[data-day="${d}"]`)
+                        .querySelectorAll('.ampm-btn')
+                        .forEach(x => x.classList.remove('active'));
+                    e.target.classList.add('active');
+                }));
+        }
+
+        function toggleDay(dayId) {
+            selectedDays[dayId].selected = !selectedDays[dayId].selected;
+            const card   = document.querySelector(`.day-card[data-day="${dayId}"]`);
+            const status = card.querySelector('.day-status');
+            if (selectedDays[dayId].selected) {
+                card.classList.add('selected');
+                status.textContent = '✓ تم الاختيار';
+            } else {
+                card.classList.remove('selected');
+                status.textContent = 'اضغط للاختيار';
+            }
+            updateConfirmButton();
+        }
+
+        selectAllBtn.addEventListener('click', () => {
+            allSelected = !allSelected;
+            DAYS_OF_WEEK.forEach(day => {
+                selectedDays[day.id].selected = allSelected;
+                const card   = document.querySelector(`.day-card[data-day="${day.id}"]`);
+                const status = card.querySelector('.day-status');
+                if (allSelected) {
+                    card.classList.add('selected');
+                    status.textContent = '✓ تم الاختيار';
+                } else {
+                    card.classList.remove('selected');
+                    status.textContent = 'اضغط للاختيار';
+                }
+            });
+            selectAllBtn.textContent = allSelected ? '❌ إلغاء التحديد' : '☑️ تحديد الكل';
+            updateConfirmButton();
+        });
+
+        function updateConfirmButton() {
+            confirmBtn.disabled = !Object.values(selectedDays).some(d => d.selected);
+        }
+
+        /* ─── phone check ─────────────────────────────────────────────
+           Rules:
+             • Block ONLY when the API explicitly returns a "not found" message.
+             • Allow for: success response, any other error message, network failure.
+        ─────────────────────────────────────────────────────────────── */
+        checkBtn.addEventListener('click', async () => {
+            const input = phoneInput.value.trim();
+            if (!input) {
+                showStatus('⚠️ الرجاء إدخال رقم الهاتف', 'error');
+                phoneInput.classList.add('invalid');
+                return;
+            }
+            const cleaned = input.replace(/[\s\-\+]/g, '');
+            if (cleaned.length < 9) {
+                showStatus('⚠️ الرقم المدخل قصير جداً', 'error');
+                phoneInput.classList.add('invalid');
+                return;
+            }
+
+            phoneNumber = cleaned;
+            phoneInput.classList.remove('invalid', 'valid');
+            checkBtn.disabled = true;
+            showStatus('<span class="spinner"></span> جاري فحص الرقم...', 'loading');
+
+            let blocked = false; // only true when API says "not found"
+
+            try {
+                const res  = await fetch(API_URL, {
+                    method:  'POST',
+                    headers: { 'Authorization': `Bearer ${API_TOKEN}`, 'Content-Type': 'application/json' },
+                    body:    JSON.stringify({ phone_number: phoneNumber }),
+                });
+                const data = await res.json().catch(() => ({}));
+                const msg  = (data.message || '').toLowerCase();
+
+                const isNotFound =
+                    msg.includes('غير موجود') ||
+                    msg.includes('not found')  ||
+                    msg.includes('not exist')  ||
+                    msg.includes('لا يوجد');
+
+                if (isNotFound) {
+                    blocked = true;
+                }
+            } catch (_) {
+                // network error → allow scheduling
+            }
+
+            checkBtn.disabled = false;
+
+            if (blocked) {
+                phoneInput.classList.add('invalid');
+                isPhoneValid = false;
+                showStatus('❌ الرقم غير موجود في النظام، لا يمكن جدولة التحديث', 'error');
+            } else {
+                phoneInput.classList.add('valid');
+                isPhoneValid = true;
+                showStatus('✅ الرقم موجود في النظام! يمكنك المتابعة', 'success');
+                scheduleWrapper.classList.add('visible');
+                confirmWrapper.classList.add('visible');
+                setTimeout(() => scheduleWrapper.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
+            }
+        });
+
+        /* ─── confirm & activate schedule ─── */
+        confirmBtn.addEventListener('click', async () => {
+            if (!isPhoneValid) {
+                showStatus('⚠️ الرجاء فحص الرقم أولاً', 'error');
+                return;
+            }
+
+            const schedules = Object.entries(selectedDays)
+                .filter(([, d]) => d.selected)
+                .map(([id, d]) => ({
+                    day:    id,
+                    ampm:   d.ampm,
+                    hour:   d.hour,
+                    minute: d.minute,
+                    hour24: convertTo24(d.hour, d.ampm),
+                }));
+
+            if (schedules.length === 0) {
+                showStatus('⚠️ الرجاء اختيار يوم واحد على الأقل', 'error');
+                return;
+            }
+
+            confirmBtn.disabled = true;
+            confirmBtn.textContent = 'جاري الحفظ...';
+
+            saveAndActivate(phoneNumber, schedules);
+
+            confirmBtn.classList.add('success-state');
+            confirmBtn.textContent = '✓ تم التأكيد';
+            confirmMessage.classList.add('show');
+
+            setTimeout(() => {
+                confirmBtn.classList.remove('success-state');
+                confirmBtn.textContent = 'تأكيد';
+                confirmBtn.disabled = false;
+                confirmMessage.classList.remove('show');
+            }, 5000);
+        });
+
+        phoneInput.addEventListener('keypress', e => { if (e.key === 'Enter') checkBtn.click(); });
+        phoneInput.addEventListener('input', () => {
+            phoneInput.classList.remove('invalid', 'valid');
+            statusMessage.classList.remove('show');
+        });
+
+        /* ─── boot ─── */
+        initDays();
+        restoreSchedules();
+        console.log('🚀 Fouad Store Scheduler ready');
+    </script>
 </body>
 </html>
