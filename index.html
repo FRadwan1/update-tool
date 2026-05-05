@@ -115,7 +115,7 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
   </div>
 </div>
 
-<a class="whatsapp-fab" href="https://wa.me/972592227684" target="_blank" rel="noopener">
+<a class="whatsapp-fab" href="https://wa.me/970XXXXXXXXX" target="_blank" rel="noopener">
   <svg viewBox="0 0 32 32"><path d="M16 0C7.163 0 0 7.163 0 16c0 2.822.738 5.469 2.027 7.77L0 32l8.47-2.004A15.94 15.94 0 0 0 16 32c8.837 0 16-7.163 16-16S24.837 0 16 0zm0 29.333a13.3 13.3 0 0 1-6.763-1.843l-.486-.288-4.997 1.182 1.26-4.857-.318-.499A13.261 13.261 0 0 1 2.667 16C2.667 8.636 8.636 2.667 16 2.667S29.333 8.636 29.333 16 23.364 29.333 16 29.333zm7.274-9.822c-.397-.199-2.353-1.16-2.718-1.293-.365-.132-.63-.199-.897.199-.265.397-1.028 1.293-1.26 1.56-.232.265-.464.298-.861.099-.397-.199-1.675-.617-3.19-1.967-1.179-1.052-1.975-2.35-2.206-2.748-.232-.397-.025-.613.174-.81.179-.178.397-.465.596-.697.199-.232.265-.397.397-.662.133-.265.066-.497-.033-.696-.099-.199-.897-2.16-1.229-2.958-.324-.776-.653-.671-.897-.683l-.763-.013c-.265 0-.696.099-1.061.497-.365.397-1.393 1.36-1.393 3.317 0 1.958 1.426 3.848 1.625 4.113.199.265 2.807 4.286 6.803 6.013.951.41 1.693.656 2.271.84.954.304 1.823.261 2.51.158.766-.114 2.353-.962 2.685-1.89.332-.927.332-1.723.232-1.89-.099-.166-.365-.265-.762-.464z"/></svg>
 </a>
 
@@ -163,19 +163,15 @@ function checkPhone(){
   .then(function(res){ return res.json(); })
   .then(function(data){
     console.log("API response:", data);
-    
- var notFound = data.message && data.message.indexOf("غير موجود") !== -1;
-
-if(data.success === true || !notFound){
-  verifiedPhone = phone;
-  showMsg("msgFound");
-  document.getElementById("daysSection").classList.add("show");
-  document.getElementById("daysSection").scrollIntoView({behavior:"smooth"});
-} else {
-  var el = document.getElementById("msgError");
-  el.textContent = "❌ عذراً، رقمك غير مدرج تحت وكالة الفؤاد تيلكوم";
-  showMsg("msgError");
-}
+    if(data.success === true){
+      verifiedPhone = phone;
+      showMsg("msgFound");
+      document.getElementById("daysSection").classList.add("show");
+      document.getElementById("daysSection").scrollIntoView({behavior:"smooth"});
+    } else {
+      var el = document.getElementById("msgError");
+      el.textContent = data.message ? "❌ " + data.message : "❌ عذراً، رقمك غير مدرج تحت وكالة الفؤاد تيلكوم";
+      showMsg("msgError");
     }
   })
   .catch(function(err){
