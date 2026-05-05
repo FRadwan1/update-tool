@@ -51,10 +51,13 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .time-panel-label{font-size:14px;font-weight:700;color:var(--green);min-width:70px}
 .time-select{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-family:inherit;font-size:15px;outline:none;cursor:pointer;direction:ltr}
 .time-select:focus{border-color:var(--green)}
+.period-toggle{display:flex;gap:6px}
+.period-btn{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:8px 14px;color:var(--muted);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:.2s}
+.period-btn.active{background:#0a2a1a;border-color:var(--green);color:var(--green)}
 .confirm-section{display:none;margin-top:8px}
 .confirm-section.show{display:block;animation:f .4s}
 .btn-confirm{width:100%;padding:18px;font-size:20px;font-weight:900;border-radius:12px;border:none;background:var(--red);color:#fff;cursor:pointer;font-family:inherit;box-shadow:var(--gr);transition:.4s;letter-spacing:2px}
-.btn-confirm:hover:not(:disabled){transform:translateY(-2px)}
+.btn-confirm:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 0 20px #e74c3c,0 0 40px #e74c3c80}
 .btn-confirm.success{background:var(--green);color:var(--bg);box-shadow:var(--gg)}
 .btn-confirm:disabled{opacity:.6;cursor:not-allowed;transform:none}
 .confirm-result{margin-top:14px;text-align:center;font-size:16px;font-weight:700;color:var(--green);display:none;animation:f .4s}
@@ -64,7 +67,7 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .whatsapp-fab::before{content:'';position:absolute;inset:-4px;border-radius:50%;border:2px solid #25d366;animation:wp 2s ease-out infinite}
 @keyframes wp{0%{transform:scale(1);opacity:.8}100%{transform:scale(1.5);opacity:0}}
 .whatsapp-fab svg{width:32px;height:32px;fill:#fff}
-@media(max-width:480px){.card{padding:18px 14px}.input-group{flex-direction:column}.btn{width:100%}.days-grid{grid-template-columns:repeat(4,1fr)}.time-panel{flex-direction:column;align-items:flex-start}.whatsapp-fab{bottom:16px;left:16px;width:52px;height:52px}}
+@media (max-width:480px){.card{padding:18px 14px}.input-group{flex-direction:column}.btn{width:100%}.days-grid{grid-template-columns:repeat(4,1fr)}.time-panel{flex-direction:column;align-items:flex-start}.whatsapp-fab{bottom:16px;left:16px;width:52px;height:52px}}
 </style>
 </head>
 <body>
@@ -115,17 +118,11 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
   </div>
 </div>
 
-<a class="whatsapp-fab" href="https://wa.me/970XXXXXXXXX" target="_blank" rel="noopener">
+<a class="whatsapp-fab" href="https://wa.me/970XXXXXXXXX" target="_blank" rel="noopener" aria-label="واتساب">
   <svg viewBox="0 0 32 32"><path d="M16 0C7.163 0 0 7.163 0 16c0 2.822.738 5.469 2.027 7.77L0 32l8.47-2.004A15.94 15.94 0 0 0 16 32c8.837 0 16-7.163 16-16S24.837 0 16 0zm0 29.333a13.3 13.3 0 0 1-6.763-1.843l-.486-.288-4.997 1.182 1.26-4.857-.318-.499A13.261 13.261 0 0 1 2.667 16C2.667 8.636 8.636 2.667 16 2.667S29.333 8.636 29.333 16 23.364 29.333 16 29.333zm7.274-9.822c-.397-.199-2.353-1.16-2.718-1.293-.365-.132-.63-.199-.897.199-.265.397-1.028 1.293-1.26 1.56-.232.265-.464.298-.861.099-.397-.199-1.675-.617-3.19-1.967-1.179-1.052-1.975-2.35-2.206-2.748-.232-.397-.025-.613.174-.81.179-.178.397-.465.596-.697.199-.232.265-.397.397-.662.133-.265.066-.497-.033-.696-.099-.199-.897-2.16-1.229-2.958-.324-.776-.653-.671-.897-.683l-.763-.013c-.265 0-.696.099-1.061.497-.365.397-1.393 1.36-1.393 3.317 0 1.958 1.426 3.848 1.625 4.113.199.265 2.807 4.286 6.803 6.013.951.41 1.693.656 2.271.84.954.304 1.823.261 2.51.158.766-.114 2.353-.962 2.685-1.89.332-.927.332-1.723.232-1.89-.099-.166-.365-.265-.762-.464z"/></svg>
 </a>
 
 <script>
-// ━━━━━━━━━━━━━━━━━━━━━━━━
-// الإعدادات - Frontend
-// ━━━━━━━━━━━━━━━━━━━━━━━━
-var API_URL   = "https://shy-dew-08d5.fradwan1.workers.dev";
-var API_TOKEN = "00506852a4758b4a0cc3d8f3050ae72421d8da1724ab8b19acb6fc911e7a12ad";
-
 var verifiedPhone = "";
 var selectedDays = {};
 var dayOrder = ["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
@@ -137,50 +134,19 @@ function showMsg(id){
   if(id) document.getElementById(id).classList.add("show");
 }
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━
-// فحص الرقم عبر Worker
-// ━━━━━━━━━━━━━━━━━━━━━━━━
 function checkPhone(){
   var phone = document.getElementById("phoneInput").value.trim();
   if(!phone){ alert("الرجاء إدخال الرقم"); return; }
-
-  var btn = document.getElementById("checkBtn");
-  btn.disabled = true;
   showMsg("msgChecking");
-  document.getElementById("daysSection").classList.remove("show");
-  document.getElementById("confirmSection").classList.remove("show");
-  selectedDays = {};
-  renderTimePanels();
-
-  fetch(API_URL, {
-    method: "POST",
-    headers: {
-      "Authorization": "Bearer " + API_TOKEN,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ phone_number: phone })
-  })
-  .then(function(res){ return res.json(); })
-  .then(function(data){
-    console.log("API response:", data);
-    if(data.success === true){
+  setTimeout(function(){
+    if(phone.length >= 9){
       verifiedPhone = phone;
       showMsg("msgFound");
       document.getElementById("daysSection").classList.add("show");
-      document.getElementById("daysSection").scrollIntoView({behavior:"smooth"});
     } else {
-      var el = document.getElementById("msgError");
-      el.textContent = data.message ? "❌ " + data.message : "❌ عذراً، رقمك غير مدرج تحت وكالة الفؤاد تيلكوم";
       showMsg("msgError");
     }
-  })
-  .catch(function(err){
-    console.error("Error:", err);
-    var el = document.getElementById("msgError");
-    el.textContent = "⚠️ خطأ في الاتصال، يرجى المحاولة مرة أخرى.";
-    showMsg("msgError");
-  })
-  .then(function(){ btn.disabled = false; });
+  }, 1500);
 }
 
 document.getElementById("phoneInput").addEventListener("keydown", function(e){
@@ -194,7 +160,7 @@ function toggleDay(btn){
     delete selectedDays[day];
   } else {
     btn.classList.add("active");
-    selectedDays[day] = {hour:"00", minute:"00"};
+    selectedDays[day] = {hour:"12", minute:"00", period:"am"};
   }
   renderTimePanels();
   updateConfirmVisibility();
@@ -210,7 +176,7 @@ function toggleAllDays(){
       delete selectedDays[btn.dataset.day];
     } else {
       btn.classList.add("active");
-      selectedDays[btn.dataset.day] = {hour:"00", minute:"00"};
+      selectedDays[btn.dataset.day] = {hour:"12", minute:"00", period:"am"};
     }
   });
   renderTimePanels();
@@ -224,21 +190,24 @@ function renderTimePanels(){
     if(!selectedDays[day]) return;
     var t = selectedDays[day];
     var hours = "";
-    for(var h=0; h<=23; h++){
-      var hh = h<10?"0"+h:""+h;
-      hours += "<option value='"+hh+"'"+(t.hour==hh?" selected":"")+">"+hh+"</option>";
+    for(var h=1; h<=12; h++){
+      hours += '<option value="'+h+'"'+(t.hour==h?' selected':'')+'>'+h+'</option>';
     }
     var mins = "";
     for(var m=0; m<60; m++){
-      var mm = m<10?"0"+m:""+m;
-      mins += "<option value='"+mm+"'"+(t.minute==mm?" selected":"")+">"+mm+"</option>";
+      var mm = m<10?'0'+m:''+m;
+      mins += '<option value="'+mm+'"'+(t.minute==mm?' selected':'')+'>'+mm+'</option>';
     }
-    c.innerHTML += "<div class='time-panel'>"+
-      "<span class='time-panel-label'>"+day+"</span>"+
-      "<select class='time-select' onchange='updateTime(\""+day+"\",\"hour\",this.value)'>"+hours+"</select>"+
-      "<span style='color:var(--muted);font-size:18px;font-weight:900'>:</span>"+
-      "<select class='time-select' onchange='updateTime(\""+day+"\",\"minute\",this.value)'>"+mins+"</select>"+
-      "</div>";
+    var html = '<div class="time-panel">'+
+      '<span class="time-panel-label">'+day+'</span>'+
+      '<select class="time-select" onchange="updateTime(\''+day+'\',\'hour\',this.value)">'+hours+'</select>'+
+      '<span style="color:var(--muted);font-size:18px;font-weight:900">:</span>'+
+      '<select class="time-select" onchange="updateTime(\''+day+'\',\'minute\',this.value)">'+mins+'</select>'+
+      '<div class="period-toggle">'+
+        '<button class="period-btn '+(t.period=="am"?"active":"")+'" onclick="setPeriod(\''+day+'\',\'am\',this)">صباحاً</button>'+
+        '<button class="period-btn '+(t.period=="pm"?"active":"")+'" onclick="setPeriod(\''+day+'\',\'pm\',this)">مساءً</button>'+
+      '</div></div>';
+    c.innerHTML += html;
   });
 }
 
@@ -246,33 +215,36 @@ function updateTime(day, field, val){
   if(selectedDays[day]) selectedDays[day][field] = val;
 }
 
-function updateConfirmVisibility(){
-  var sec = document.getElementById("confirmSection");
-  Object.keys(selectedDays).length > 0 ? sec.classList.add("show") : sec.classList.remove("show");
+function setPeriod(day, period, btn){
+  if(!selectedDays[day]) return;
+  selectedDays[day].period = period;
+  var panel = btn.parentElement;
+  panel.querySelectorAll(".period-btn").forEach(function(b){ b.classList.remove("active"); });
+  btn.classList.add("active");
 }
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━
-// تأكيد الجدولة
-// ━━━━━━━━━━━━━━━━━━━━━━━━
+function updateConfirmVisibility(){
+  var sec = document.getElementById("confirmSection");
+  if(Object.keys(selectedDays).length > 0){
+    sec.classList.add("show");
+  } else {
+    sec.classList.remove("show");
+    document.getElementById("confirmResult").classList.remove("show");
+  }
+}
+
 function confirmSchedule(){
   var btn = document.getElementById("confirmBtn");
   var result = document.getElementById("confirmResult");
   if(Object.keys(selectedDays).length === 0) return;
   btn.disabled = true;
   btn.textContent = "جاري الحفظ...";
-
-  var schedule = [];
-  dayOrder.forEach(function(day){
-    if(selectedDays[day]) schedule.push({day:day, hour:selectedDays[day].hour, minute:selectedDays[day].minute});
-  });
-
-  console.log("الجدولة المحفوظة:", {phone: verifiedPhone, schedule: schedule});
-
   setTimeout(function(){
     btn.classList.add("success");
-    btn.textContent = "✓ تم التأكيد";
+    btn.textContent = "تم التأكيد";
     result.classList.add("show");
-  }, 800);
+    console.log("تم حفظ الجدولة:", {phone: verifiedPhone, schedule: selectedDays});
+  }, 1000);
 }
 </script>
 </body>
