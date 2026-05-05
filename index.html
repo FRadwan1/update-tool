@@ -504,14 +504,16 @@
 
             try {
                 const res = await fetch(`${NUMBERS_API}/numbers/${phoneNumber}`, { method: 'GET' });
-                console.log('📡 HTTP status:', res.status);
                 if (res.status === 200) {
                     const data = await res.json().catch(() => ({}));
-                    console.log('📡 API response:', data);
                     if (data.exists === false) blocked = true;
                 }
             } catch (_) {
-                console.warn('📡 تعذّر الوصول للـ API، سيُسمح بالجدولة');
+                checkBtn.disabled = false;
+                phoneInput.classList.add('invalid');
+                isPhoneValid = false;
+                showStatus('⚠️ حدث خطأ في الاتصال، يرجى المحاولة بعد دقائق', 'error');
+                return;
             }
 
             checkBtn.disabled = false;
